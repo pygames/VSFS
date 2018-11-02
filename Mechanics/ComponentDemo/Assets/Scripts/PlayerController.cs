@@ -1,9 +1,10 @@
 ﻿using UnityEngine;
-
+using UnityEngine.AI;
 // Include the namespace required to use Unity UI
 using UnityEngine.UI;
 
 using System.Collections;
+using UnityEditor;
 
 public class PlayerController : MonoBehaviour
 {
@@ -19,11 +20,18 @@ public class PlayerController : MonoBehaviour
     private Rigidbody rb;
     private int count;
 
+    public Camera cam;
+
+    public NavMeshAgent agent;
+
+    public GameObject goal;
+    public GameObject loc;
+
     void TakeRelease()
     {
 
         //if no children, take. Otherwise release.
-        if(transform.childCount == 0)
+        if(transform.GetComponentsInChildren<Transform>()[1].childCount == 0)
         {
 
             print("Grabbing...");
@@ -56,12 +64,11 @@ public class PlayerController : MonoBehaviour
             if (tMin)
             {
 
-                
                 tMin.GetComponent<Rigidbody>().useGravity = false;
                 float xHold = tMin.transform.position.x;
                 float zHold = tMin.transform.position.z;
-                tMin.transform.position = new Vector3(xHold, 1.2f, zHold);
-                tMin.parent = transform;
+                tMin.parent = transform.GetComponentsInChildren<Transform>()[1];
+                tMin.GetComponent<KResource>().held = true;
 
             }
 
@@ -75,11 +82,13 @@ public class PlayerController : MonoBehaviour
             print("Letting go...");
 
             //references an object in hand
-            Transform inHand = transform.GetComponentsInChildren<Transform>()[1];
+            Transform inHand = transform.GetComponentsInChildren<Transform>()[1].GetComponentsInChildren<Transform>()[1];
 
             //restores gravity and moves object to mobile objects collection.
             inHand.GetComponent<Rigidbody>().useGravity = true;
             inHand.parent = transform.parent.parent.Find("Resources").Find("Mobile");
+            print(inHand);
+            inHand.GetComponent<KResource>().held = false;
 
         }
 
@@ -107,12 +116,143 @@ public class PlayerController : MonoBehaviour
     void Update()
     {
 
+        //Grabs/drops an object when the spacebar is hit.
         if (Input.GetKeyUp("space"))
-        {
-
             TakeRelease();
 
+        //sends the cook to where was clicked.
+        if (Input.GetMouseButtonDown(0))
+        {
+            Ray ray = cam.ScreenPointToRay(Input.mousePosition);
+            RaycastHit hit;
+
+            if (Physics.Raycast(ray, out hit))
+                agent.SetDestination(hit.point);
+
         }
+
+        //if goal
+        //gather objects
+        //else smoke
+
+
+        if (Input.GetKeyUp("return"))
+            Achieve(goal);
+
+    }
+
+    void Achieve(GameObject objective)
+    {
+        //if fixed ingredient
+            //set fixed ingredient as location
+        //else
+            //location selector
+                //arbitrary for now. Create invisible GO as default
+        //order things to gather. I'm not going to build this yet
+        //for ingredients
+            //if ingredient doesn't exists
+                //gatherobjects(ingredient)
+            //while(ingredient not in location)
+            //goto ingredient
+            //while(not holding ingredient)
+                //grab ingredient
+            //goto location
+            //drop ingredient
+
+        
+        StartCoroutine(GetClose(objective));
+
+        
+
+    }
+
+    IEnumerator GetClose(GameObject objective)
+    {
+
+        Transform[] weHave;
+        GameObject[] weNeed;
+        weHave = transform.parent.parent.Find("Resources").Find("Mobile").GetComponentsInChildren<Transform>();
+        weNeed = objective.GetComponent<KResource>().prereqs;
+
+        bool gathered = false;
+
+        //I wanna make this into a while controlled by gathered which will check if there are any ingredients outside the location
+        while (!gathered)
+        {
+
+            print("starting while");
+            for (int i = 0; i < weNeed.Length; i++)
+            {
+
+                print("starting for");
+
+                Transform goHere = null;
+
+                //checks to see what has been gathered
+                //assumes has everything, then sees if it's wrong for any item
+                gathered = true;
+                foreach (Transform t in weHave)
+                    if (Vector3.Distance(t.position, gameObject.GetComponent<PlayerController>().loc.transform.position) > GrabRange)
+                        gathered = false;
+
+                print(gathered);
+
+                //cycles through eveything in the kitchen to compare to the current item in question
+                //if item matches thing we need, sets that item to be used as destination
+                foreach (Transform t in weHave)
+                    if (weNeed[i].transform.name == t.name && Vector3.Distance(t.position, gameObject.GetComponent<PlayerController>().loc.transform.position) > GrabRange)
+                    {
+
+                        print("Gohere set to " + t);
+                        goHere = t;
+
+                    }
+
+                //
+                if (goHere)
+                {
+
+                    print("Getting " + goHere);
+                    agent.SetDestination(goHere.position);
+
+                    print("first yield");
+                    yield return new WaitUntil(() => Vector3.Distance(goHere.position, transform.position) < GrabRange);
+
+                    print("entering grab while");
+                    while (transform.GetComponentsInChildren<Transform>()[1].childCount == 0)
+                    {
+                        print("trying to grab...");
+                        TakeRelease();
+                    }
+
+                    print("go back");
+                    agent.SetDestination(gameObject.GetComponent<PlayerController>().loc.transform.position);
+
+                    print("second yield");
+                    yield return new WaitUntil(() => Vector3.Distance(gameObject.GetComponent<PlayerController>().loc.transform.position, transform.position) < GrabRange / 2);
+
+                    print("entering drop while");
+                    while (transform.GetComponentsInChildren<Transform>()[1].childCount != 0)
+                    {
+                        print("trying to drop...");
+                        TakeRelease();
+                    }
+
+                }
+                else
+                {
+
+                    //print("Must make " + weNeed[i]);
+                    //Achieve(weNeed[i]);
+
+                }
+
+            }
+
+        }
+        
+        print("giggity");
+
 
     }
 

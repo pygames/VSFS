@@ -8,6 +8,8 @@ public class KResource : MonoBehaviour {
     public int activeTime;
     public int passiveTime;
 
+    public bool held;
+
 	// Use this for initialization
 	void Start () {
 		
@@ -15,6 +17,14 @@ public class KResource : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+
+        if (held)
+        {
+
+            //transform.position = transform.parent.forward;
+            transform.position = transform.parent.position + transform.parent.forward * 1;
+
+        }
 		
 	}
 }
