@@ -249,6 +249,8 @@ public class PlayerController : MonoBehaviour
 
             }
 
+            yield return null;
+
         }
         
         print("giggity");
