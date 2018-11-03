@@ -130,6 +130,7 @@ ModelImporter:
     7400006: idle
     7400008: unedited
     7400010: walk
+    7400012: carrying_while_idle
     9500000: //RootNode
     13700000: male_teen_lo
   externalObjects: {}
@@ -204,7 +205,6 @@ ModelImporter:
     legStretch: 0.05
     feetSpacing: 0
     rootMotionBoneName: 
-    rootMotionBoneRotation: {x: 0, y: 0, z: 0, w: 1}
     hasTranslationDoF: 0
     hasExtraRoot: 0
     skeletonHasParents: 1
