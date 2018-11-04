@@ -1,0 +1,146 @@
+fileFormatVersion: 2
+guid: c4df004b71e80b44c8c81f7534b3c1a7
+ModelImporter:
+  serializedVersion: 23
+  fileIDToRecycleName:
+    100000: ceiling_cutoff_dining
+    100002: ceiling_cutoff_kitchen
+    100004: counter_sides
+    100006: counter_top
+    100008: Cube_001
+    100010: dining_floor
+    100012: dining_walls
+    100014: Kitchen_floor
+    100016: kitchen_wall
+    100018: //RootNode
+    400000: ceiling_cutoff_dining
+    400002: ceiling_cutoff_kitchen
+    400004: counter_sides
+    400006: counter_top
+    400008: Cube_001
+    400010: dining_floor
+    400012: dining_walls
+    400014: Kitchen_floor
+    400016: kitchen_wall
+    400018: //RootNode
+    2100000: tileMat
+    2100002: brickMat__Texture_seamless_tile_piastrelle_simo-3d_jpg
+    2100004: carpet
+    2100006: carpet__Texture_seamless_tile_piastrelle_simo-3d_jpg
+    2100008: wood_panels__download_jpg
+    2100010: unnamed
+    2100012: black__frontend-large_jpg
+    2100014: marbleMat__83571738-close-up-of-marble-texture-seamless-square-background-
+    2100016: brickMat__frontend-large_jpg
+    2100018: tileMat__Texture_seamless_tile_piastrelle_simo-3d_jpg
+    2300000: ceiling_cutoff_dining
+    2300002: ceiling_cutoff_kitchen
+    2300004: counter_sides
+    2300006: counter_top
+    2300008: Cube_001
+    2300010: dining_floor
+    2300012: dining_walls
+    2300014: Kitchen_floor
+    2300016: kitchen_wall
+    3300000: ceiling_cutoff_dining
+    3300002: ceiling_cutoff_kitchen
+    3300004: counter_sides
+    3300006: counter_top
+    3300008: Cube_001
+    3300010: dining_floor
+    3300012: dining_walls
+    3300014: Kitchen_floor
+    3300016: kitchen_wall
+    4300000: ceiling_cutoff_dining
+    4300002: dining_walls
+    4300004: dining_floor
+    4300006: Cube_001
+    4300008: counter_sides
+    4300010: ceiling_cutoff_kitchen
+    4300012: counter_top
+    4300014: kitchen_wall
+    4300016: Kitchen_floor
+    7400000: Default Take
+    9500000: //RootNode
+  externalObjects: {}
+  materials:
+    importMaterials: 1
+    materialName: 0
+    materialSearch: 1
+    materialLocation: 1
+  animations:
+    legacyGenerateAnimations: 4
+    bakeSimulation: 0
+    resampleCurves: 1
+    optimizeGameObjects: 0
+    motionNodeName: 
+    rigImportErrors: 
+    rigImportWarnings: 
+    animationImportErrors: 
+    animationImportWarnings: 
+    animationRetargetingWarnings: 
+    animationDoRetargetingWarnings: 0
+    importAnimatedCustomProperties: 0
+    importConstraints: 0
+    animationCompression: 1
+    animationRotationError: 0.5
+    animationPositionError: 0.5
+    animationScaleError: 0.5
+    animationWrapMode: 0
+    extraExposedTransformPaths: []
+    extraUserProperties: []
+    clipAnimations: []
+    isReadable: 1
+  meshes:
+    lODScreenPercentages: []
+    globalScale: 1
+    meshCompression: 0
+    addColliders: 0
+    importVisibility: 1
+    importBlendShapes: 1
+    importCameras: 1
+    importLights: 1
+    swapUVChannels: 0
+    generateSecondaryUV: 0
+    useFileUnits: 1
+    optimizeMeshForGPU: 1
+    keepQuads: 0
+    weldVertices: 1
+    preserveHierarchy: 0
+    indexFormat: 0
+    secondaryUVAngleDistortion: 8
+    secondaryUVAreaDistortion: 15.000001
+    secondaryUVHardAngle: 88
+    secondaryUVPackMargin: 4
+    useFileScale: 1
+    previousCalculatedGlobalScale: 1
+    hasPreviousCalculatedGlobalScale: 1
+  tangentSpace:
+    normalSmoothAngle: 60
+    normalImportMode: 0
+    tangentImportMode: 3
+    normalCalculationMode: 4
+  importAnimation: 1
+  copyAvatar: 0
+  humanDescription:
+    serializedVersion: 2
+    human: []
+    skeleton: []
+    armTwist: 0.5
+    foreArmTwist: 0.5
+    upperLegTwist: 0.5
+    legTwist: 0.5
+    armStretch: 0.05
+    legStretch: 0.05
+    feetSpacing: 0
+    rootMotionBoneName: 
+    hasTranslationDoF: 0
+    hasExtraRoot: 0
+    skeletonHasParents: 1
+  lastHumanDescriptionAvatarSource: {instanceID: 0}
+  animationType: 2
+  humanoidOversampling: 1
+  additionalBone: 0
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 
