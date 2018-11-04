@@ -4,6 +4,7 @@ using UnityEngine.AI;
 using UnityEngine.UI;
 
 using System.Collections;
+using System.Collections.Generic;
 using UnityEditor;
 
 public class PlayerController : MonoBehaviour
@@ -25,7 +26,8 @@ public class PlayerController : MonoBehaviour
     public NavMeshAgent agent;
 
     public GameObject goal;
-    public GameObject loc;
+    //public GameObject loc;
+    public Vector3 loc;
 
     void TakeRelease()
     {
@@ -169,81 +171,92 @@ public class PlayerController : MonoBehaviour
     IEnumerator GetClose(GameObject objective)
     {
 
-        Transform[] weHave;
         GameObject[] weNeed;
-        weHave = transform.parent.parent.Find("Resources").Find("Mobile").GetComponentsInChildren<Transform>();
+        Transform[] temp = transform.parent.parent.Find("Resources").Find("Mobile").GetComponentsInChildren<Transform>();
+        Transform[] weHave = new Transform[temp.Length - 1];
+        for (int i = 1; i < temp.Length; i++)
+        {
+            print("we have " + temp[i]);
+            weHave[i - 1] = temp[i];
+        }
         weNeed = objective.GetComponent<KResource>().prereqs;
 
         bool gathered = false;
+        bool ingredientMissing = true;
+        bool locSet = false;
 
         //I wanna make this into a while controlled by gathered which will check if there are any ingredients outside the location
-        while (!gathered)
+        while (!gathered && ingredientMissing)
         {
 
             print("starting while");
+
             for (int i = 0; i < weNeed.Length; i++)
             {
 
                 print("starting for");
 
                 Transform goHere = null;
-
-                //checks to see what has been gathered
-                //assumes has everything, then sees if it's wrong for any item
+                ingredientMissing = true;
                 gathered = true;
-                foreach (Transform t in weHave)
-                    if (Vector3.Distance(t.position, gameObject.GetComponent<PlayerController>().loc.transform.position) > GrabRange)
-                        gathered = false;
-
-                print(gathered);
 
                 //cycles through eveything in the kitchen to compare to the current item in question
                 //if item matches thing we need, sets that item to be used as destination
                 foreach (Transform t in weHave)
-                    if (weNeed[i].transform.name == t.name && Vector3.Distance(t.position, gameObject.GetComponent<PlayerController>().loc.transform.position) > GrabRange)
+                {
+
+                    print("we need " + weNeed[i].transform);
+                    print("...and we have " + t);
+                    print(Vector3.Distance(t.position, gameObject.GetComponent<PlayerController>().loc));
+                    if (weNeed[i].transform.name == t.name)
                     {
 
-                        print("Gohere set to " + t);
-                        goHere = t;
+                        ingredientMissing = false;
+                        if (Vector3.Distance(t.position, gameObject.GetComponent<PlayerController>().loc) > GrabRange)
+                        {
 
+                            print("Gohere set to " + t);
+                            goHere = t;
+
+                            if (!locSet)
+                                gameObject.GetComponent<PlayerController>().loc = goHere.position;
+                            locSet = true;
+                            gathered = false;
+
+                        }
                     }
+                }
 
-                //
+                //if the object is in the kitchen, go to it, get it, and bring it to prep area.
                 if (goHere)
                 {
 
-                    print("Getting " + goHere);
+                    print("Getting " + goHere + " Get within " + GrabRange);
                     agent.SetDestination(goHere.position);
 
-                    print("first yield");
+                    print("yield 1 " + Vector3.Distance(goHere.position, transform.position));
                     yield return new WaitUntil(() => Vector3.Distance(goHere.position, transform.position) < GrabRange);
 
-                    print("entering grab while");
+                    print("while 1");
                     while (transform.GetComponentsInChildren<Transform>()[1].childCount == 0)
-                    {
-                        print("trying to grab...");
                         TakeRelease();
-                    }
 
-                    print("go back");
-                    agent.SetDestination(gameObject.GetComponent<PlayerController>().loc.transform.position);
+                    print("going to loc");
+                    agent.SetDestination(gameObject.GetComponent<PlayerController>().loc);
 
-                    print("second yield");
-                    yield return new WaitUntil(() => Vector3.Distance(gameObject.GetComponent<PlayerController>().loc.transform.position, transform.position) < GrabRange / 2);
+                    print("yield 2 " + Vector3.Distance(gameObject.GetComponent<PlayerController>().loc, transform.position));
+                    yield return new WaitUntil(() => Vector3.Distance(gameObject.GetComponent<PlayerController>().loc, transform.position) < GrabRange / 2);
 
-                    print("entering drop while");
+                    print("while 2");
                     while (transform.GetComponentsInChildren<Transform>()[1].childCount != 0)
-                    {
-                        print("trying to drop...");
                         TakeRelease();
-                    }
 
                 }
-                else
+                if(ingredientMissing)
                 {
 
-                    //print("Must make " + weNeed[i]);
-                    //Achieve(weNeed[i]);
+                    print("Must make " + weNeed[i]);
+                    Achieve(weNeed[i]);
 
                 }
 
@@ -255,6 +268,35 @@ public class PlayerController : MonoBehaviour
         
         print("giggity");
 
+        Transform tMin = null;
+        float minDist = float.PositiveInfinity;
+        Vector3 currentPos = gameObject.GetComponent<PlayerController>().loc;
+        Transform[] resourceArray = transform.parent.parent.Find("Resources").Find("Mobile").GetComponentsInChildren<Transform>();
+        //foreach(Transform t in resourceArray)
+        for (int i = 1; i < weNeed.Length; i++)
+        {
+            
+            foreach (Transform t in weHave)
+            {
+
+                if (weNeed[i].transform.name == t.name)
+                {
+
+                    float dist = Vector3.Distance(t.position, currentPos);
+                    if (dist < minDist)
+                    {
+                        tMin = t;
+                        minDist = dist;
+                    }
+                }
+            }
+            
+            //Destroy(tMin.gameObject);
+
+        }
+        
+        GameObject justMade = Instantiate(objective, currentPos, Quaternion.Euler(0, 0, 0));
+        justMade.transform.parent = transform.parent.parent.Find("Resources").Find("Mobile");
 
     }
 
